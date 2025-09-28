@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<h4 class="mb-3">Dashboard — {{ month }}/{{ year }}</h4>
+
+{% if budget %}
+  <div class="row g-3">
+    <div class="col-md-4">
+      <div class="card"><div class="card-body">
+        <div class="text-muted">Budget Bulanan</div>
+        <div class="h4">Rp {{ budget.nominal_max }}</div>
+      </div></div>
+    </div>
+    <div class="col-md-4">
+      <div class="card"><div class="card-body">
+        <div class="text-muted">Terpakai</div>
+        <div class="h4">Rp {{ total_terpakai }}</div>
+      </div></div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-{{ over|yesno:'danger,success' }}"><div class="card-body">
+        <div class="text-muted">Sisa</div>
+        <div class="h4">Rp {{ sisa }}</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="mt-4 d-flex gap-2">
+    <a class="btn btn-primary" href="/expense/add/">Input Pengeluaran</a>
+    <a class="btn btn-outline-secondary" href="/budget/set/">Ubah Budget</a>
+  </div>
+
+  <hr class="my-4">
+  <h5>Pengeluaran Hari Ini</h5>
+  {% if expenses_today %}
+    <ul class="list-group">
+      {% for e in expenses_today %}
+        <li class="list-group-item d-flex justify-content-between">
+          <span>{{ e.tanggal }} — {{ e.deskripsi }}</span>
+          <strong>Rp {{ e.nominal }}</strong>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-muted">Belum ada pengeluaran hari ini.</p>
+  {% endif %}
+{% else %}
+  <div class="alert alert-warning">Belum ada budget bulan ini. Silakan set dulu.</div>
+  <a class="btn btn-primary" href="/budget/set/">Set Budget</a>
+{% endif %}
+{% endblock %}
