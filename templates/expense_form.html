@@ -1,12 +1,27 @@
 {% extends "base.html" %}
+{% load forms_extras %}
+{% load formatting %}
+{% block title %}Tambah Pengeluaran · Sakuwuz{% endblock %}
 {% block content %}
 <h4>Tambah Pengeluaran</h4>
 <form method="post" class="mt-3">
   {% csrf_token %}
   <div class="row g-3">
-    <div class="col-md-3">{{ form.tanggal.label_tag }} {{ form.tanggal }}</div>
-    <div class="col-md-4">{{ form.nominal.label_tag }} {{ form.nominal }}</div>
-    <div class="col-md-12">{{ form.deskripsi.label_tag }} {{ form.deskripsi }}</div>
+    <div class="col-md-3">
+      <label class="form-label">Tanggal</label>
+      {{ form.tanggal|add_class:"form-control" }}
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Nominal</label>
+      <div class="input-group">
+        <span class="input-group-text">Rp</span>
+        {{ form.nominal|add_class:"form-control" }}
+      </div>
+    </div>
+    <div class="col-12">
+      <label class="form-label">Deskripsi</label>
+      {{ form.deskripsi|add_class:"form-control" }}
+    </div>
   </div>
   <button class="btn btn-primary mt-3" type="submit">Simpan</button>
   <a class="btn btn-outline-secondary mt-3" href="/">Batal</a>

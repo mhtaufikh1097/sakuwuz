@@ -6,6 +6,7 @@ class ExpenseForm(forms.ModelForm):
         model = Expense
         fields = ["tanggal", "nominal", "deskripsi"]
         widgets = {
-            "tanggal": forms.DateInput(attrs={"type":"date"}),
-            "deskripsi": forms.Textarea(attrs={"rows":2}),
+            "tanggal": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
+            "nominal": forms.NumberInput(attrs={"step": "0.01", "class": "form-control"}),
+            "deskripsi": forms.Textarea(attrs={"rows": 2, "class": "form-control"}),
         }

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load formatting %}
+{% block title %}Kalender · Sakuwuz{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <a class="btn btn-outline-secondary btn-sm" href="{{ prev_link }}">&laquo; Bulan Sebelumnya</a>
+  <h4 class="m-0">
+    Kalender — {{ month }}/{{ year }}
+    {% if budget %}
+      <span class="badge text-bg-light ms-2">Budget: {{ budget.nominal_max|rupiah }}</span>
+    {% endif %}
+  </h4>
+  <a class="btn btn-outline-secondary btn-sm" href="{{ next_link }}">Bulan Berikutnya &raquo;</a>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-bordered align-middle bg-white">
+    <thead class="table-light">
+      <tr class="text-center small">
+        <th>Sen</th><th>Sel</th><th>Rab</th><th>Kam</th><th>Jum</th><th>Sab</th><th>Min</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for row in weeks %}
+      <tr style="height: 92px;">
+        {% for cell in row %}
+          {% if cell %}
+            {% with is_today=(today.year == year and today.month == month and today.day == cell.day) %}
+            <td class="p-2 {% if is_today %}border-primary{% endif %}">
+              <div class="d-flex justify-content-between align-items-start">
+                <div class="fw-semibold">{{ cell.day }}</div>
+                {% if cell.total and cell.total > 0 %}
+                  <span class="badge text-bg-info">{{ cell.total|rupiah }}</span>
+                {% endif %}
+              </div>
+              <div class="mt-2">
+                <a class="btn btn-sm btn-outline-primary w-100" href="{{ cell.url }}">Detail</a>
+              </div>
+            </td>
+            {% endwith %}
+          {% else %}
+            <td class="bg-light-subtle"></td>
+          {% endif %}
+        {% endfor %}
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="mt-3 d-flex gap-2">
+  <a class="btn btn-outline-secondary" href="/">Kembali ke Dashboard</a>
+  <a class="btn btn-primary" href="/expense/add/">Tambah Pengeluaran</a>
+</div>
+{% endblock %}
