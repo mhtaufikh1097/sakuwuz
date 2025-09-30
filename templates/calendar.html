@@ -11,6 +11,8 @@
       <span class="badge text-bg-light ms-2">Budget: {{ budget.nominal_max|rupiah }}</span>
     {% endif %}
   </h4>
+  <a class="btn btn-outline-primary btn-sm" href="/budget/set/?year={{ year }}&month={{ month }}">Set Budget bulan ini</a>
+
   <a class="btn btn-outline-secondary btn-sm" href="{{ next_link }}">Bulan Berikutnya &raquo;</a>
 </div>
 
@@ -26,8 +28,7 @@
       <tr style="height: 92px;">
         {% for cell in row %}
           {% if cell %}
-            {% with is_today=(today.year == year and today.month == month and today.day == cell.day) %}
-            <td class="p-2 {% if is_today %}border-primary{% endif %}">
+            <td class="p-2 {% if today.year == year and today.month == month and today.day == cell.day %}border-primary{% endif %}">
               <div class="d-flex justify-content-between align-items-start">
                 <div class="fw-semibold">{{ cell.day }}</div>
                 {% if cell.total and cell.total > 0 %}
@@ -38,7 +39,6 @@
                 <a class="btn btn-sm btn-outline-primary w-100" href="{{ cell.url }}">Detail</a>
               </div>
             </td>
-            {% endwith %}
           {% else %}
             <td class="bg-light-subtle"></td>
           {% endif %}

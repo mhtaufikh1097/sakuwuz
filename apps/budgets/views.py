@@ -48,22 +48,30 @@ def dashboard_view(request):
 
 @login_required(login_url="/admin/login/")
 def set_budget_view(request):
-    month, year = _active_period()
+    # ambil bulan/tahun aktif dari query, fallback ke bulan berjalan
+    today = timezone.localdate()
+    month = int(request.GET.get("month", today.month))
+    year = int(request.GET.get("year", today.year))
+
+    # cari budget existing utk user+bulan+tahun itu
     instance = Budget.objects.filter(user=request.user, month=month, year=year).first()
+
     if request.method == "POST":
         form = BudgetForm(request.POST, instance=instance)
         if form.is_valid():
             budget = form.save(commit=False)
             budget.user = request.user
-            # hitung sisa berdasarkan pengeluaran existing kalau edit
+            # hitung sisa berdasarkan pengeluaran yg sudah ada (jika edit)
             from apps.expenses.models import Expense
-            total = Decimal("0.00")
-            if instance:
-                total = Expense.objects.filter(budget=instance).aggregate_sum()
+            from django.db.models import Sum
+            total = Expense.objects.filter(budget=instance).aggregate(total=Sum("nominal"))["total"] or 0 if instance else 0
             budget.sisa = budget.nominal_max - total
             budget.save()
             messages.success(request, "Budget bulanan disimpan.")
-            return redirect("dashboard")
+            return redirect("calendar")  # atau redirect("dashboard")
     else:
-        form = BudgetForm(instance=instance)
+        # prefill form sesuai bulan/tahun target
+        initial = {"month": month, "year": year}
+        form = BudgetForm(instance=instance, initial=initial)
+
     return render(request, "budget_set.html", {"form": form, "month": month, "year": year})
