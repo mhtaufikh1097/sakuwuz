@@ -80,7 +80,19 @@
       </table>
     </div>
   {% else %}
-    <p class="text-muted">Belum ada pengeluaran hari ini.</p>
+    <tbody>
+  {% for row in pengeluaran_hari_ini %}
+  <tr>
+    <td>
+      <a href="{% url 'expense_by_day' row.date.year row.date.month row.date.day %}">
+        {{ row.date|date:"d M Y" }}
+      </a>
+    </td>
+    <td>{{ row.description }}</td>
+    <td class="text-end">Rp {{ row.amount|intcomma }}</td>
+  </tr>
+  {% endfor %}
+</tbody>
   {% endif %}
 {% else %}
   <div class="alert alert-warning shadow-sm">Belum ada budget bulan ini. Silakan set dulu.</div>

@@ -1,47 +1,35 @@
 {% extends "base.html" %}
-{% load formatting %}
-{% block title %}Detail {{ date|date:"d M Y" }} · Sakuwuz{% endblock %}
+{% load humanize %}
 {% block content %}
-<h4 class="mb-3">Detail — {{ date|date:"d M Y" }}</h4>
+<div class="container py-4">
+  <h2 class="mb-1">Pengeluaran {{ chosen|date:"d M Y" }}</h2>
+  <p class="text-muted">Total hari ini: <strong>Rp {{ total_harian|intcomma }}</strong></p>
 
-<div class="card shadow-sm">
-  <div class="card-body">
-    <div class="d-flex justify-content-between">
-      <div class="text-muted">Subtotal Hari Ini</div>
-      <div class="fw-bold">{{ subtotal|rupiah }}</div>
-    </div>
-  </div>
-</div>
-
-<div class="mt-3">
   {% if items %}
     <div class="table-responsive">
-      <table class="table table-sm align-middle">
-        <thead class="table-light">
+      <table class="table table-striped align-middle">
+        <thead>
           <tr>
-            <th style="width:160px">Waktu Input</th>
+            <th style="width: 180px;">Waktu</th>
             <th>Deskripsi</th>
-            <th class="text-end" style="width:180px">Nominal</th>
+            <th class="text-end" style="width: 180px;">Nominal</th>
           </tr>
         </thead>
         <tbody>
-          {% for e in items %}
+          {% for exp in items %}
           <tr>
-            <td>{{ e.waktu_input|date:"d M Y H:i" }}</td>
-            <td>{{ e.deskripsi }}</td>
-            <td class="text-end">{{ e.nominal|rupiah }}</td>
+            <td>{{ exp.created_at|date:"H:i" }}</td>
+            <td>{{ exp.description }}</td>
+            <td class="text-end">Rp {{ exp.amount|intcomma }}</td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
   {% else %}
-    <p class="text-muted">Belum ada pengeluaran pada tanggal ini.</p>
+    <div class="alert alert-info">Belum ada pengeluaran pada tanggal ini.</div>
   {% endif %}
-</div>
 
-<div class="mt-3 d-flex gap-2">
-  <a class="btn btn-outline-secondary" href="/calendar/?year={{ year }}&month={{ month }}">Kembali ke Kalender</a>
-  <a class="btn btn-primary" href="/expense/add/">Tambah Pengeluaran</a>
+  <a class="btn btn-outline-secondary mt-2" href="{% url 'dashboard' %}">← Kembali ke Dashboard</a>
 </div>
 {% endblock %}

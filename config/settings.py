@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "apps.expenses",
     "django.contrib.humanize",
     "apps.core",
+    
 ]
 
 MIDDLEWARE = [

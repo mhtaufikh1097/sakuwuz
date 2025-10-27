@@ -16,16 +16,30 @@ Including another URLconf
 """
 # config/urls.py
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from apps.budgets.views import dashboard_view, set_budget_view
 from apps.expenses import views as expenses_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+
+    # Dashboard & Budget
     path("", dashboard_view, name="dashboard"),
     path("budget/set/", set_budget_view, name="set_budget"),
+
+    # Expenses
     path("expense/add/", expenses_views.add_expense_view, name="add_expense"),
     path("calendar/", expenses_views.calendar_view, name="calendar"),
-    path("calendar/<int:year>/<int:month>/<int:day>/", expenses_views.day_detail_view, name="day_detail"),
-]
+    path("calendar/<int:year>/<int:month>/<int:day>/",
+         expenses_views.day_detail_view, name="day_detail"),
 
+    # Rute detail per tanggal (kalau belum di-include dari apps.expenses.urls)
+    # path("expenses/<int:year>/<int:month>/<int:day>/",
+    #      expenses_views.expense_by_day, name="expense_by_day"),
+
+    # HAPUS baris ini kalau belum punya app 'apps.dashboard'
+    # path("dashboard/", include("apps.dashboard.urls")),
+
+    # Biarkan ini hanya kalau kamu memang punya apps/expenses/urls.py
+    path("expenses/", include("apps.expenses.urls")),
+]
